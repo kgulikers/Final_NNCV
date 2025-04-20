@@ -1,0 +1,15 @@
+--find-links https://download.pytorch.org/whl/torch_stable.html
+torch
+torchvision
+torchaudio
+torchinfo
+numpy
+pandas
+scikit-image
+scikit-learn
+scipy
+opencv-python
+matplotlib
+seaborn
+wandb
+tqdm
