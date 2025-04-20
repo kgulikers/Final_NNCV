@@ -74,15 +74,15 @@ def get_args_parser():
     parser.add_argument("--batch-size", type=int, default=64, help="Training batch size")
     parser.add_argument("--epochs", type=int, default=10, help="Number of training epochs")
     parser.add_argument("--lr", type=float, default=1e-5, help="Learning rate")
-    parser.add_argument("--num-workers", type=int, default=10, help="Number of workers for data loaders")
+    parser.add_argument("--num-workers", type=int, default=9, help="Number of workers for data loaders")
     parser.add_argument("--seed", type=int, default=42, help="Random seed for reproducibility")
     parser.add_argument("--experiment-id", type=str, default="unet-training", help="Experiment ID for Weights & Biases")
     parser.add_argument("--use-amp", action="store_true")
     parser.add_argument("--early-stop-patience", type=int, default=5)
-    parser.add_argument("--img-height", type=int, default=512, help="Height of input images")
+    parser.add_argument("--img-height", type=int, default=1024, help="Height of input images")
     parser.add_argument("--img-width", type=int, default=1024, help="Width of input images")
     # Set very high so it doesnt unfreeze during training
-    parser.add_argument("--freeze-epochs", type=int, default=500, help="Epochs with backbone frozen before unfreezing")
+    parser.add_argument("--freeze-epochs", type=int, default=5, help="Epochs with backbone frozen before unfreezing")
     return parser
 
 def dice_loss(pred, target, smooth=1e-3):
@@ -368,12 +368,10 @@ def main(args):
 
     # data transforms & loaders
     img_size = (args.img_height, args.img_width)
-    autoaugment = AutoAugment()
 
     # Define the transforms to apply to the data
     train_transform = Compose([
         ToImage(),
-        lambda img, mask: (autoaugment(img), mask),
         Resize(img_size),
         ToDtype(torch.float32, scale=True),
         Normalize((0.485,0.456,0.406),(0.229,0.224,0.225)),
